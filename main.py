@@ -1,5 +1,14 @@
 from framework import *
 from problems import *
+## TODO: Remove this!
+from framework.serializable import StreetsMap
+from framework.consts import Consts
+from framework.graph_search import HeuristicFunctionType
+from framework.graph_search.graph_problem_interface import GraphProblem,SearchNode
+from framework.graph_search.astar import AStar
+from framework.graph_search.astar_epsilon import AStarEpsilon
+from framework.graph_search.uniform_cost import UniformCost
+
 
 from matplotlib import pyplot as plt
 import numpy as np
@@ -97,7 +106,7 @@ def toy_map_problem_experiments():
     print('Solve the map problem.')
 
     # Ex.10
-    # TODO: Just run it and inspect the printed result.
+    # Just run it and inspect the printed result.
     toy_map_problem = MapProblem(streets_map, 54, 549)
     uc = UniformCost()
     res = uc.solve_problem(toy_map_problem)

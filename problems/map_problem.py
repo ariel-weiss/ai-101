@@ -1,4 +1,5 @@
-from framework.graph_search.graph_problem_interface import OperatorResult
+from framework.graph_search.graph_problem_interface import OperatorResult,GraphProblemState,GraphProblem
+from framework.serializable import StreetsMap
 from framework import *
 
 from typing import Iterator
@@ -66,17 +67,15 @@ class MapProblem(GraphProblem):
         #        `link.distance`). You don't have to specify the operator name here.
         #  Note: Generally, in order to check whether a variable is set to None you should use the expression:
         #        `my_variable_to_check is None`, and particularly do NOT use comparison (==).
-        for link in junction:
-            sss = OperatorResult()
+        for link in junction.outgoing_links:
+            suc_state = MapState(link.target)
+            yield OperatorResult(suc_state, link.distance)
 
-        yield OperatorResult(successor_state=MapState(self.target_junction_id), operator_cost=7)  # TODO: remove this line!
 
     def is_goal(self, state: GraphProblemState) -> bool:
         """
         :return: Whether a given map state represents the destination.
         """
         assert (isinstance(state, MapState))
+        return state.junction_id == self.target_junction_id 
 
-        # TODO [Ex.10]: modify the returned value to indicate whether `state` is a final state.
-        # You may use the problem's input parameters (stored as fields of this object by the constructor).
-        return state.junction_id == 14593  # TODO: modify this!
