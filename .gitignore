@@ -1,0 +1,8 @@
+#VSCode related
+.vscode/
+
+# Local History for Visual Studio Code
+.history/
+
+# Virtual Env:
+.venv/
