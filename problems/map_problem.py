@@ -56,7 +56,7 @@ class MapProblem(GraphProblem):
         # Get the junction (in the map) that is represented by the state to expand.
         junction = self.streets_map[state_to_expand.junction_id]
 
-        # TODO [Ex.10]:
+        #  [Ex.10]:
         #  Read the documentation of this method in the base class `GraphProblem.expand_state_with_costs()`.
         #  Finish the implementation of this method.
         #  Iterate over the outgoing links of the current junction (find the implementation of `Junction`
