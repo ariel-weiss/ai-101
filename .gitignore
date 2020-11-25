@@ -6,3 +6,6 @@
 
 # Virtual Env:
 .venv/
+
+#Cache:
+problems/__pycache__/

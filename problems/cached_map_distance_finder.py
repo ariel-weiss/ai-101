@@ -2,7 +2,8 @@ from typing import *
 
 from framework import *
 from .map_problem import MapProblem
-
+#TODO : REMOVE
+from framework.ways import Junction
 
 class CachedMapDistanceFinder:
     """
@@ -34,7 +35,7 @@ class CachedMapDistanceFinder:
 
     def get_map_cost_between(self, src_junction: Junction, tgt_junction: Junction) -> Optional[Cost]:
         """
-        TODO [Ex.17]: Implement this method!
+         [Ex.17]: Implement this method!
         If the distance for the given source & target junctions is already stored in the cache, just return it.
         If the distance has not been stored in the cache yet, create a `MapProblem` with the given source & target,
          solve this problem using the `self.map_problem_solver` (that is given in the c'tor), store the cost of
@@ -45,5 +46,18 @@ class CachedMapDistanceFinder:
          access the `_cache` field directly.
         The cache key should include the source & target indices.
         """
+        
+        src_dst = (src_junction.index, tgt_junction.index)
+        # the distance for the given source & target junctions is already stored in the cache
+        if self._is_in_cache(src_dst):
+            return self._get_from_cache(src_dst)
 
-        raise NotImplementedError  # TODO: remove this line!
+        map_problem = MapProblem(self.streets_map, src_junction.index, tgt_junction.index)
+        res = self.map_problem_solver.solve_problem(map_problem)
+
+        if not res.is_solution_found:
+            self._insert_to_cache(src_dst, None)
+            return None
+
+        self._insert_to_cache(src_dst, res.solution_cost)
+        return res.solution_cost

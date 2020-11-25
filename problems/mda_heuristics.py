@@ -49,7 +49,10 @@ class MDAMaxAirDistHeuristic(HeuristicFunction):
         if len(all_certain_junctions_in_remaining_ambulance_path) < 2:
             return 0
 
-        return 10  # TODO: modify this line.
+        return max(self.cached_air_distance_calculator.get_air_distance_between_junctions(item1, item2)\
+                   for item1 in all_certain_junctions_in_remaining_ambulance_path\
+                   for item2 in all_certain_junctions_in_remaining_ambulance_path\
+                   if item1 != item2)
 
 
 class MDASumAirDistHeuristic(HeuristicFunction):
@@ -72,7 +75,7 @@ class MDASumAirDistHeuristic(HeuristicFunction):
         Note that we ignore here the problem constraints (like enforcing the #matoshim and free
          space in the ambulance's fridge). We only make sure to visit all certain junctions in
          `all_certain_junctions_in_remaining_ambulance_path`.
-        TODO [Ex.24]:
+         [Ex.24]:
             Complete the implementation of this method.
             Use `self.cached_air_distance_calculator.get_air_distance_between_junctions()` for air
              distance calculations.
@@ -92,7 +95,29 @@ class MDASumAirDistHeuristic(HeuristicFunction):
         if len(all_certain_junctions_in_remaining_ambulance_path) < 2:
             return 0
 
-        raise NotImplementedError  # TODO: remove this line and complete the missing part here!
+        current_loc = state.current_location
+        path = [(0, current_loc)]
+        dist_lst = []
+        nr_visited_locs = 0
+
+        while nr_visited_locs < len(all_certain_junctions_in_remaining_ambulance_path):
+            dist_lst = []
+            found_one = False
+            # Add distance to not visited junctions into list
+            for loc in all_certain_junctions_in_remaining_ambulance_path:
+                _,locs = zip(*path)
+                if loc not in locs:
+                    dist_from_current = self.cached_air_distance_calculator.get_air_distance_between_junctions(path[nr_visited_locs][1], loc)
+                    dist_lst.append((dist_from_current, loc))
+                    found_one = True
+            if found_one:
+                dist_lst.sort(key=lambda e: e[0])
+                path.append(dist_lst[0]) # append the closet
+            nr_visited_locs += 1
+
+        total_distance = sum([float(p[0]) for p in path])
+        assert len(path) == len(all_certain_junctions_in_remaining_ambulance_path)
+        return total_distance
 
 
 class MDAMSTAirDistHeuristic(HeuristicFunction):
@@ -119,7 +144,7 @@ class MDAMSTAirDistHeuristic(HeuristicFunction):
 
     def _calculate_junctions_mst_weight_using_air_distance(self, junctions: List[Junction]) -> float:
         """
-        TODO [Ex.27]: Implement this method.
+         [Ex.27]: Implement this method.
               Use `networkx` (nx) package (already imported in this file) to calculate the weight
                of the minimum-spanning-tree of the graph in which the vertices are the given junctions
                and there is an edge between each pair of distinct junctions (no self-loops) for which
@@ -130,7 +155,15 @@ class MDAMSTAirDistHeuristic(HeuristicFunction):
               Use `nx.minimum_spanning_tree()` to get an MST. Calculate the MST size using the method
               `.size(weight='weight')`. Do not manually sum the edges' weights.
         """
-        raise NotImplementedError  # TODO: remove this line!
+        graph = nx.Graph()
+        graph.add_nodes_from(junctions)     
+
+        edges = [(j1, j2, self.cached_air_distance_calculator.get_air_distance_between_junctions(j1, j2)) \
+                 for j1 in junctions for j2 in junctions if j1 != j2]
+        graph.add_weighted_edges_from(edges)
+
+        mst = nx.minimum_spanning_tree(graph)
+        return mst.size(weight='weight')
 
 
 class MDATestsTravelDistToNearestLabHeuristic(HeuristicFunction):
@@ -164,6 +197,18 @@ class MDATestsTravelDistToNearestLabHeuristic(HeuristicFunction):
             """
             Returns the distance between `junction` and the laboratory that is closest to `junction`.
             """
-            return min(...)  # TODO: replace `...` with the relevant implementation.
+            return min([self.cached_air_distance_calculator.get_air_distance_between_junctions(junction, lab.location) \
+                            for lab in self.problem.problem_input.laboratories])
 
-        raise NotImplementedError  # TODO: remove this line!
+        total_cost = 0
+
+        if len(state.tests_on_ambulance) > 0:
+            nr_taken = sum(a.nr_roommates for a in state.tests_on_ambulance)
+            dist_to_lab = air_dist_to_closest_lab(state.current_location)
+            total_cost += dist_to_lab * nr_taken
+            
+        not_visited_apartments = self.problem.get_reported_apartments_waiting_to_visit(state)
+        cost_to_visit = sum((ap.nr_roommates * air_dist_to_closest_lab(ap.location)) for ap in not_visited_apartments)
+        total_cost += cost_to_visit
+
+        return total_cost

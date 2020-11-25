@@ -45,12 +45,14 @@ class AStar(BestFirstSearch):
         Should calculate and return the f-score of the given node.
         This score is used as a priority of this node in the open priority queue.
 
-        TODO [Ex.11]: implement this method.
+         [Ex.11]: implement this method.
         Remember: In Weighted-A* the f-score is defined by ((1-w) * cost) + (w * h(state)).
         Notice: You may use `search_node.g_cost`, `self.heuristic_weight`, and `self.heuristic_function`.
         """
-
-        raise NotImplementedError  # TODO: remove this line!
+        w = self.heuristic_weight   
+        f_score = ((1-w) * search_node.g_cost) + (w * self.heuristic_function.estimate(search_node.state))
+        
+        return f_score
 
     def _open_successor_node(self, problem: GraphProblem, successor_node: SearchNode):
         """
@@ -72,4 +74,27 @@ class AStar(BestFirstSearch):
                   but still could be improved.
         """
 
-        raise NotImplementedError  # TODO: remove this line!
+        if self.open.has_state(successor_node.state):
+            old_node = self.open.get_node_by_state(successor_node.state)
+            if successor_node.g_cost < old_node.g_cost:    # A node with state s exists in OPEN
+                # old_node.operator_name = successor_node.operator_name
+                # old_node.operator_cost = successor_node.operator_cost
+                # old_node.cost = successor_node.cost
+                # old_node.parent_search_node = successor_node.parent_search_node
+                # old_node.expanding_priority = successor_node.expanding_priority
+                self.open.extract_node(old_node)  # Move old node from CLOSED to OPEN
+                self.open.push_node(successor_node)
+
+        elif self.close.has_state(successor_node.state):   # A node with state s exists in OPEN
+            old_node = self.close.get_node_by_state(successor_node.state)
+            if successor_node.g_cost < old_node.g_cost:   # New parent is better
+                # old_node.operator_name = successor_node.operator_name
+                # old_node.operator_cost = successor_node.operator_cost
+
+                # old_node.cost = successor_node.cost
+                # old_node.parent_search_node = successor_node.parent_search_node
+                # old_node.expanding_priority = successor_node.expanding_priority
+                self.close.remove_node(old_node)    # Move old node from CLOSED to OPEN
+                self.open.push_node(successor_node)
+        else:   # this is a new state - create a new node
+            self.open.push_node(successor_node)
