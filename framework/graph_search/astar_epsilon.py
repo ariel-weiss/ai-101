@@ -39,7 +39,7 @@ class AStarEpsilon(AStar):
         Extracts the next node to expand from the open queue,
          by focusing on the current FOCAL and choosing the node
          with the best within_focal_priority from it.
-        TODO [Ex.42]: Implement this method!
+         [Ex.42]: Implement this method!
         Find the minimum expanding-priority value in the `open` queue.
         Calculate the maximum expanding-priority of the FOCAL, which is
          the min expanding-priority in open multiplied by (1 + eps) where
@@ -49,7 +49,9 @@ class AStarEpsilon(AStar):
          `self.max_focal_size` if it is set (not None).
         Notice: You might want to pop items from the `open` priority queue,
          and then choose an item out of these popped items. Don't forget:
-         the other items have to be pushed back into open.
+         the other items have to be pushed back into open
+         .
+
         Inspect the base class `BestFirstSearch` to retrieve the type of
          the field `open`. Then find the definition of this type and find
          the right methods to use (you might want to peek the head node, to
@@ -57,6 +59,7 @@ class AStarEpsilon(AStar):
         Remember that `open` is a priority-queue sorted by `f` in an ascending
          order (small to big). Popping / peeking `open` returns the node with
          the smallest `f`.
+
         For each node (candidate) in the created focal, calculate its priority
          by callingthe function `self.within_focal_priority_function` on it.
          This function expects to get 3 values: the node, the problem and the
@@ -71,5 +74,44 @@ class AStarEpsilon(AStar):
          method should be kept in the open queue at the end of this method, except
          for the extracted (and returned) node.
         """
+        if self.open.is_empty():
+            return None
+        
+        priority_list = []
+        # Find the minimum expanding-priority value in the `open` queue
+        for _ in range(len(self.open)):
+            node = self.open.pop_next_node()
+            priority_list.append(self._calc_node_expanding_priority(node))
+            self.open.push_node(node)
+        # for node in self.open:
+        #     priority_list.append(self._calc_node_expanding_priority(node))
+        min_expanding_priority = min(priority_list)
+        max_expanding_priority = min_expanding_priority * (1 + self.focal_epsilon)
+        
+        # Create the FOCAL by popping items from the `open` queue
+        focal_list = []
+        if self.max_focal_size is None:
+            focal_size = len(self.open)
+        else:
+            focal_size = min(len(self.open), self.max_focal_size)
 
-        raise NotImplementedError  # TODO: remove!
+        for _ in range(focal_size):
+            if self.open.peek_next_node().expanding_priority <= max_expanding_priority:
+                node_from_open = self.open.pop_next_node()
+                focal_list.append(node_from_open)
+
+        # For each node (candidate) in the created focal, calculate its priority
+        h_focal_priority = [self.within_focal_priority_function(n, problem, self) for n in focal_list]
+        min_node_index = (np.array(h_focal_priority)).argmin()
+        # After having this index ,pop this item from the focal
+        resulted_node = focal_list[min_node_index]
+
+        # Give back the nodes we took (excepts resulted node)
+        for node in focal_list:
+            if node != resulted_node:
+                self.open.push_node(node)
+
+        if self.use_close:
+            self.close.add_node(resulted_node)
+
+        return resulted_node

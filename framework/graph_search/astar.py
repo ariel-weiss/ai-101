@@ -62,7 +62,7 @@ class AStar(BestFirstSearch):
          node into the `self.open` priority queue, and may check the existence
          of another node representing the same state in `self.close`.
 
-        TODO [Ex.11]: implement this method.
+         [Ex.11]: implement this method.
         Have a look at the pseudo-code shown in class for A*. Here you should implement the same in python.
         Have a look at the implementation of `BestFirstSearch` to have better understanding.
         Use `self.open` (SearchNodesPriorityQueue) and `self.close` (SearchNodesCollection) data structures.
