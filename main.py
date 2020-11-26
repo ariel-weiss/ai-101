@@ -107,6 +107,7 @@ def run_astar_for_weights_in_range(heuristic_type: HeuristicFunctionType, proble
             nr_expanded.append(res.nr_expanded_states)
 
     assert len(g_costs) == len(nr_expanded) == len(weights)     # ensure the lists are of the same size
+    print("Plotting graph...")
     plot_distance_and_expanded_wrt_weight_figure(problem.name, weights, g_costs, nr_expanded)
 
 
@@ -136,6 +137,11 @@ def toy_map_problem_experiments():
     toy_map_problem = MapProblem(streets_map, 54, 549)
     astar_null = AStar(heuristic_function_type=NullHeuristic, heuristic_weight= 0.5)
     res = astar_null.solve_problem(toy_map_problem)
+    print("")
+    print("=================================")
+    print("===: [AStar + NullHeuristic] :===")
+    print("=================================")
+    print("")
     print(res)
 
     # Ex.13
@@ -144,6 +150,11 @@ def toy_map_problem_experiments():
     toy_map_problem = MapProblem(streets_map, 54, 549)
     astar_aird = AStar(heuristic_function_type=AirDistHeuristic, heuristic_weight=0.5)
     res = astar_aird.solve_problem(toy_map_problem)
+    print("")
+    print("====================================")
+    print("===: [AStar + AirDistHeuristic] :===")
+    print("====================================")
+    print("")
     print(res)
 
     # Ex.15

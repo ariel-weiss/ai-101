@@ -79,12 +79,14 @@ class AStarEpsilon(AStar):
         
         priority_list = []
         # Find the minimum expanding-priority value in the `open` queue
+        lstofnodes = []
         for _ in range(len(self.open)):
-            node = self.open.pop_next_node()
-            priority_list.append(self._calc_node_expanding_priority(node))
+            nodei = self.open.pop_next_node()
+            priority_list.append(self._calc_node_expanding_priority(nodei))
+            lstofnodes.append(nodei)
+        for node in lstofnodes:
             self.open.push_node(node)
-        # for node in self.open:
-        #     priority_list.append(self._calc_node_expanding_priority(node))
+            
         min_expanding_priority = min(priority_list)
         max_expanding_priority = min_expanding_priority * (1 + self.focal_epsilon)
         
