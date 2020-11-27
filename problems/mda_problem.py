@@ -324,13 +324,13 @@ class MDAProblem(GraphProblem):
         gasPrice = self.problem_input.gas_liter_price
         monetary_cost = (gasPrice * gasConsum * distance_cost)
 
-        if isinstance(prev_state.current_site,Laboratory):
-            monetary_cost += (numOfTests > 0) * prev_state.current_site.tests_transfer_cost
+        if isinstance(succ_state.current_site,Laboratory):
+            monetary_cost += (numOfTests > 0) * succ_state.current_site.tests_transfer_cost
             if succ_state.current_site in prev_state.visited_labs:
                 monetary_cost += succ_state.current_site.revisit_extra_cost
         tests_travel_distance_cost = distance_cost * numOfTests
 
-        return MDACost(distance_cost=distance_cost,monetary_cost=monetary_cost,tests_travel_distance_cost=tests_travel_distance_cost,optimization_objective=self.optimization_objective)
+        return MDACost(distance_cost,monetary_cost,tests_travel_distance_cost,optimization_objective=self.optimization_objective)
 
 
     def is_goal(self, state: GraphProblemState) -> bool:

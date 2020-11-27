@@ -9,3 +9,4 @@
 
 #Cache:
 problems/__pycache__/
+.outputs/
