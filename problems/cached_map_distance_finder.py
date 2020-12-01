@@ -2,8 +2,6 @@ from typing import *
 
 from framework import *
 from .map_problem import MapProblem
-#TODO : REMOVE
-from framework.ways import Junction
 
 class CachedMapDistanceFinder:
     """

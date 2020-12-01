@@ -8,12 +8,6 @@ from .map_heuristics import AirDistHeuristic
 from .cached_map_distance_finder import CachedMapDistanceFinder
 from .mda_problem_input import *
 
-## TODO: Remove this!
-from framework.serializable import StreetsMap
-from framework.graph_search import Cost,ExtendedCost,OperatorResult
-from framework.graph_search.graph_problem_interface import GraphProblem,GraphProblemState
-from framework.graph_search.astar import AStar
-from framework.ways import Junction
 
 __all__ = ['MDAState', 'MDACost', 'MDAProblem', 'MDAOptimizationObjective']
 
