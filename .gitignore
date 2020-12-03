@@ -8,10 +8,9 @@
 .venv/
 
 #Cache:
-problems/__pycache__/
+**/__pycache__/
 .outputs/
-framework/db/small_MDA_TEST.in
-framework/db/tlv_streets_map_TEST.csv
+#framework/db/
 
 #Docs:
 *.docx
