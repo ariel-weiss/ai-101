@@ -12,4 +12,6 @@ problems/__pycache__/
 .outputs/
 framework/db/small_MDA_TEST.in
 framework/db/tlv_streets_map_TEST.csv
-~$_236501_HW1_W2021.docx
+
+#Docs:
+*.docx

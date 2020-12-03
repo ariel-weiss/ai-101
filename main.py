@@ -288,7 +288,7 @@ def multiple_objectives_mda_problem_experiments():
     # Ex.35
     # : create an instance of `AStar` with the `MDATestsTravelDistToNearestLabHeuristic`,
     #       solve the `moderate_mda_problem_with_tests_travel_dist_cost` with it and print the results.
-    a = AStar(heuristic_function_type=MDATestsTravelDistToNearestLabHeuristic, )
+    a = AStar(heuristic_function_type=MDATestsTravelDistToNearestLabHeuristic )
     res = a.solve_problem(moderate_mda_problem_with_tests_travel_dist_cost)
     prrety_print(35,"AStar + MDATestsTravelDistToNearestLabHeuristic")
     print(res)
